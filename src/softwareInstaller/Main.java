@@ -7,11 +7,14 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPrivateKeySpec;
 import java.util.Base64;
+import java.util.Scanner;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+
+import softwareInstaller.File;
 
 /**
  * @describe 主控类，用于调用加密函数以及与数据类通信
@@ -72,10 +75,15 @@ public final class Main {
 	public static boolean checkKey(String path) throws IOException, NoSuchAlgorithmException {
 		byte[] ownKey = {};
 		byte[] correctKey = {};
-		String[] loadKey = File.loadKeyFile(path);
-		correctKey = rsaDataDecode(loadKey[0].getBytes(), loadKey[1], loadKey[2]);/* 解码 */
+		KeyCipher loadKey = File.loadKeyFile(path);
+		correctKey = rsaDataDecode(loadKey);/* 解码 */
+		Scanner sc=new Scanner(new String(correctKey,"UTF-8"));
+		String mKey=sc.next(" ");
+		String version=sc.next(" ");
+		String function=sc.next(" ");
+		sc.close();
 		ownKey = hashDataEncode();
-		if (correctKey.equals(ownKey)) {
+		if (mKey.equals(File.byteArrayToHexString(ownKey))&&version.equals(Main.softwareVersion)&&function.equals(Main.softwareVersion)) {
 			return true;
 		} else {
 			return false;
@@ -221,35 +229,72 @@ public final class Main {
 		return bkey;
 	}
 
-	private static byte[] rsaDataDecode(byte content[], String modulusString, String privateExponentString) {
+	private static byte[] rsaDataDecode(KeyCipher key) {
 		try {
 			byte[] bkey = {};
 			// 根据n和d获取私钥
-			BigInteger modulus = new BigInteger(modulusString);
-			BigInteger privateExponent = new BigInteger(privateExponentString);
+			BigInteger modulus = new BigInteger(key.modulus);
+			BigInteger privateExponent = new BigInteger(key.prikey);
 			RSAPrivateKeySpec pks = new RSAPrivateKeySpec(modulus, privateExponent);
 			KeyFactory factory = KeyFactory.getInstance("RSA");
-			PrivateKey key = factory.generatePrivate(pks);
-			Cipher cipher = Cipher.getInstance("RSA");
-			cipher.init(Cipher.DECRYPT_MODE, key);
-			bkey = cipher.doFinal(content);
+			PrivateKey priKey = factory.generatePrivate(pks);			
+			Cipher cipher = Cipher.getInstance("RSA");/*实例化解密器*/
+			cipher.init(Cipher.DECRYPT_MODE, priKey);/*配置解密器*/
+			bkey = cipher.doFinal(key.result);/*解密*/
+			System.out.println(new String(bkey));
 			return bkey;
 		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeySpecException
 				| IllegalBlockSizeException | BadPaddingException e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
 
 	public static String hashStringShow() throws NoSuchAlgorithmException, IOException {
 		byte[] hbyte = hashDataEncode();
-		String hashString = "";
-		for (byte i : hbyte) {
-			hashString = hashString + Integer.toHexString((i & 0x000000FF) | 0xFFFFFF00).substring(6);
-		}
+		String hashString = File.byteArrayToHexString(hbyte);
 		return hashString;
 	}
 	/*
 	 * 哈希加密和RSA解密
 	 * 
 	 */
+	
+	public static void main(String[] args) {
+		KeyCipher key1 = new KeyCipher();
+		Reader isr;
+		try {
+			isr = new FileReader("C:\\Users\\Administrator\\Desktop\\nkey.key");
+			BufferedReader br = new BufferedReader(isr);
+			String result=br.readLine();
+			System.out.println(result.split("")[0]);
+			key1.result = File.hexStringToByteArray(result);/*读取加密后的字符*/
+			key1.modulus = br.readLine();/*读取模*/
+			key1.prikey = br.readLine();/*读取d*/
+			br.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		RSAPrivateKeySpec rsaspec=new RSAPrivateKeySpec(new BigInteger(key1.modulus),new BigInteger(key1.prikey));
+		KeyFactory factory;
+		try {
+			factory = KeyFactory.getInstance("RSA");
+			PrivateKey n_pri=factory.generatePrivate(rsaspec);
+			Cipher cp1=Cipher.getInstance("RSA");
+			cp1.init(Cipher.DECRYPT_MODE, n_pri);
+			byte[] mkey2=cp1.doFinal(key1.result);
+			System.out.println("直接解密的结果是："+new String(mkey2));
+		} catch (NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	} 
+}
+class KeyCipher{
+	public String prikey;
+	public String modulus;
+	public byte[] result;
 }

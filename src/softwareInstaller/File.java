@@ -24,13 +24,11 @@ public class File {
 	 * @return: void
 	 */
 	public static void createMachineKeyFile(String url, byte[] key) throws IOException {
-		FileOutputStream fos = new FileOutputStream(url);
-		fos.write(key);
-		byte[] byteVersion = Main.getSoftwareVersion().getBytes();
-		byte[] byteFunction = Main.getFuncationSwitch().getBytes();
-		fos.write(byteVersion);
-		fos.write(byteFunction);
-		fos.close();
+		FileWriter fw=new FileWriter(url);
+		fw.write(byteArrayToHexString(key)+"\n");
+		fw.write(Main.getSoftwareVersion()+"\n");
+		fw.write(Main.getFuncationSwitch());
+		fw.close();
 	}
 
 	/**
@@ -65,14 +63,42 @@ public class File {
 	 *             读取异常
 	 * @return: String
 	 */
-	public static String[] loadKeyFile(String url) throws IOException {
-		String[] key = new String[3];
+	public static KeyCipher loadKeyFile(String url) throws IOException {
+		KeyCipher key = new KeyCipher();
 		Reader isr = new FileReader(url);
 		BufferedReader br = new BufferedReader(isr);
-		key[0] = br.readLine();/*读取加密后的字符*/
-		key[1] = br.readLine();/*读取模*/
-		key[2] = br.readLine();/*读取d*/
+		String result=br.readLine();
+		System.out.println(result.split("")[0]);
+		key.result = hexStringToByteArray(result);/*读取加密后的字符*/
+		key.modulus = br.readLine();/*读取模*/
+		key.prikey = br.readLine();/*读取d*/
 		br.close();
 		return key;
+	}
+	
+	public static String byteArrayToHexString(byte[] b) {
+		String result="";
+		String tempresult="";
+		for(Byte i : b) {
+			tempresult=Integer.toHexString(i.intValue()+128);
+			if(tempresult.length()==1) {
+				tempresult="0"+tempresult;
+			}
+			result=result+tempresult;
+		}
+		return result;
+		
+	}
+	
+	static byte[] hexStringToByteArray(String s) {
+		String[] arr=s.split("");
+		byte[] result=new byte[arr.length/2];
+		int k=0;
+		for(int i=1;i<=arr.length-2;i=i+2) {
+			int tempint=Integer.parseInt(arr[i]+arr[i+1], 16)-128;
+			result[k]=(byte)tempint;
+			k++;
+		}
+		return result;
 	}
 }

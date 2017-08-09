@@ -145,8 +145,8 @@ public class Client {
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					String url = chooser.getCurrentDirectory().getAbsolutePath() + "\\"
 							+ chooser.getSelectedFile().getName();
-					if (!url.endsWith(".key")) {
-						url = url + ".key";
+					if (!url.endsWith(".mkey")) {
+						url = url + ".mkey";
 					}
 					initText.setText(url);
 
@@ -231,31 +231,25 @@ public class Client {
 			 */
 			public void mouseClicked(MouseEvent e) {
 				try {
-					frmHey.dispose();
-					dialog.setVisible(true);
-					dialog.setTitle("软件版本:" + Main.getSoftwareVersion() + " 认证通过！");
-					JTextPane txt = new JTextPane();
-					txt.setText("这里是软件本体，请继续体验本软件的神奇魅力！");
-					txt.setBounds(200, 200, 300, 20);
-					dialog.add(txt);
 					if (Main.checkKey(fetchText.getText())) {
 						String[] info = Main.ownKey();
 						JOptionPane.showMessageDialog(dialog, "软件认证成功，请继续使用", "成功", JOptionPane.INFORMATION_MESSAGE);
 						JOptionPane.showMessageDialog(dialog, "CPUID:" + info[0] + "\n" + "DiskID:" + info[1] + "\n"
 								+ "软件版本：" + info[2] + "\n" + "序列号：" + info[4], "系统信息", JOptionPane.INFORMATION_MESSAGE);
-						// frmHey.dispose();
-						// dialog.setVisible(true);
-						// dialog.setTitle("软件版本:" + Main.getSoftwareVersion() + " 认证通过！");
-						// JTextPane txt = new JTextPane();
-						// txt.setText("这里是软件本体，请继续体验本软件的神奇魅力！");
-						// txt.setBounds(200, 200, 300, 20);
-						// dialog.add(txt);
+						frmHey.dispose();
+						dialog.setVisible(true);
+						dialog.setTitle("软件版本:" + Main.getSoftwareVersion() + " 认证通过！");
+						JTextPane txt = new JTextPane();
+						txt.setText("这里是软件本体，请继续体验本软件的神奇魅力！");
+						txt.setBounds(200, 200, 300, 20);
+						dialog.add(txt);
 					} else {
 						JOptionPane.showMessageDialog(dialog, "认证失败，请重试", "失败", JOptionPane.WARNING_MESSAGE);
 					}
 				} catch (IOException | HeadlessException | NoSuchAlgorithmException | NumberFormatException
 						| NullPointerException e1) {
-					JOptionPane.showMessageDialog(dialog, "找不到文件或文件格式错误，请重试", "错误", JOptionPane.ERROR_MESSAGE);
+					e1.printStackTrace();
+					JOptionPane.showMessageDialog(dialog, "找不到文件或文件密钥失效，请重试", "错误", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -331,7 +325,7 @@ public class Client {
 			 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (JOptionPane.showConfirmDialog(dialog, "【注意】请在确认之后再修改软件版本号，否则会导致注册文件不匹配", "提示",
+				if (JOptionPane.showConfirmDialog(dialog, "【注意】请在确认之后再修改功能开关，否则会导致注册文件不匹配", "提示",
 						JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
 					if (fSwitch.isSelected()) {
 						fSwitch.setText("开");
@@ -423,6 +417,8 @@ public class Client {
 					vHint.setVisible(true);
 					fHint.setVisible(true);
 					fSwitch.setVisible(true);
+					vText.setEnabled(false);
+					fSwitch.setEnabled(false);
 
 					// 显示激活文件相关组件
 					fetchFile.setVisible(true);
@@ -449,6 +445,8 @@ public class Client {
 					vHint.setVisible(true);
 					fHint.setVisible(true);
 					fSwitch.setVisible(true);
+					vText.setEnabled(true);
+					fSwitch.setEnabled(true);
 
 					// 显示生成文件相关组件
 					initFile.setVisible(true);
@@ -500,10 +498,6 @@ public class Client {
 				initText.setVisible(false);
 				init.setVisible(false);
 
-				// 关闭版本和功能切换
-				vText.setEnabled(false);
-				fSwitch.setEnabled(false);
-
 				// 显示登陆组件
 				ruleHint.setVisible(true);
 				roleChooser.setVisible(true);
@@ -520,7 +514,7 @@ public class Client {
 		 */
 		JTextPane txtpnkey = new JTextPane();
 		txtpnkey.setText(
-				"\r\n\r\n\r\n\r\n    尊敬的用户，要激活软件，请采取以下两个步骤：\r\n     1、生成机器码，通过网页或邮件方式提交给我们，稍后您将会获得密钥文件(后缀名.mkey)\r\n     2、选择激活选项，载入您获取到的密钥文件(后缀名.key)");
+				"\r\n\r\n\r\n\r\n     尊敬的用户，要激活软件，请采取以下两个步骤：\r\n     1、生成机器码，通过网页或邮件方式提交给我们，稍后您将会获得密钥文件(后缀名.mkey)\r\n     2、选择激活选项，载入您获取到的密钥文件(后缀名.key)\r\n     3、请勿在提交机器码之后随意修改版本号和功能开关，可能导致注册文件无法使用！");
 		txtpnkey.setEditable(false);
 		txtpnkey.setBounds(0, 0, 169, 399);
 		frmHey.getContentPane().add(txtpnkey);
