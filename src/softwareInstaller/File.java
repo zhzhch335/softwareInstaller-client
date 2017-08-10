@@ -4,11 +4,11 @@ import java.io.*;
 import java.util.*;
 
 /**
- * @describe 数据类，用于序列号的读写操作
+ * @describe 数据类，用于序列号的读写以及机器码的写入操作
  * @author Zhao Zhichen
- * @time 2017.08.07 下午2:26:25
- * @version softwareInstaller.17.08.07
- * @see
+ * @time 2017.08.10 下午12:47:24
+ * @version softwareInstaller for client.17.08.10
+ * @see	
  */
 public class File {
 
@@ -75,6 +75,12 @@ public class File {
 		return key;
 	}
 	
+	/**   
+	 * @Title: byteArrayToHexString   
+	 * @Description:  将字节数组转化为十六进制数字字符串
+	 * @param b 要转化的字节数组
+	 * @return: String      
+	 */  
 	public static String byteArrayToHexString(byte[] b) {
 		String result="";
 		String tempresult="";
@@ -89,6 +95,12 @@ public class File {
 		
 	}
 	
+	/**   
+	 * @Title: hexStringToByteArray   
+	 * @Description:  将十六进制数字字符串（每两位为一组）转化为字符数组
+	 * @param s 十六进制字符串
+	 * @return: byte[]      
+	 */  
 	static byte[] hexStringToByteArray(String s) {
 		String[] arr=s.split("");
 		String version=System.getProperty("java.version");/*版本兼容性处理*/

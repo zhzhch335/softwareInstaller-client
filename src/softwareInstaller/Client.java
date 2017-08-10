@@ -25,9 +25,9 @@ import java.awt.Toolkit;
 /**
  * @describe 用户UI类 用于用户生成机器码向服务器获取注册文件以及使用这个注册文件激活软件
  * @author Zhao Zhichen
- * @time 2017.08.07 下午2:24:57
- * @version softwareInstaller.17.08.07
- * @see
+ * @time 2017.08.10 下午12:44:12
+ * @version softwareInstaller for client.17.08.10
+ * @see	
  */
 public class Client {
 
@@ -67,14 +67,13 @@ public class Client {
 		 */
 	}
 
-	/**
-	 * 窗体和组件初始化
-	 * 
-	 * @throws IOException
-	 *             文件读写异常处理
-	 * @throws NoSuchAlgorithmException
-	 *             加密方法异常处理
-	 */
+	/**   
+	 * @Title: initialize   
+	 * @Description: 窗体和组件初始化  
+	 * @throws IOException 读写异常处理
+	 * @throws NoSuchAlgorithmException 加密方法异常处理      
+	 * @return: void      
+	 */  
 	private static void initialize() throws IOException, NoSuchAlgorithmException {
 
 		// 获取系统信息（在第一次加载时）
@@ -125,14 +124,14 @@ public class Client {
 
 		// 获取桌面路径
 		final File fsv = FileSystemView.getFileSystemView().getHomeDirectory();
-		// final JFileChooser chooser = new JFileChooser(fsv);/* 将初始位置设定为桌面 */
 
 		// 浏览按钮，用于唤起文件选择对话框
 		final JButton initFile = new JButton("浏览...");
 		initFile.setVisible(false);
 		initFile.addMouseListener(new MouseAdapter() {
 			/**
-			 * Title: mouseClicked Description: 鼠标点击唤起文件选择对话框
+			 * Title: mouseClicked 
+			 * Description: 鼠标点击唤起文件选择对话框
 			 * 
 			 * @param e
 			 *            鼠标响应事件
@@ -257,11 +256,11 @@ public class Client {
 		frmHey.getContentPane().add(fetch);
 
 		/**
-		 * 下方操作区，认证身份后根据不同身份显示end
+		 * 下方操作区end
 		 */
 
 		/*
-		 * 上方信息显示区（也要放在登陆代码前面，原因同上）
+		 * 上方信息显示区
 		 * 
 		 */
 
@@ -380,7 +379,7 @@ public class Client {
 		 */
 
 		// 首先声明注销按钮但不进行事件书写，只为了ruleButton的点击事件调用，解决二者相互调用，鸡生蛋蛋生鸡的问题
-		final JButton unloadBtn = new JButton("注销");
+		final JButton unloadBtn = new JButton("切换");
 
 		// 角色选择提示标签
 		final JLabel ruleHint = new JLabel("请选择角色再进行相关操作：");

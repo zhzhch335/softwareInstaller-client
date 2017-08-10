@@ -17,8 +17,8 @@ import softwareInstaller.File;
 /**
  * @describe 主控类，用于调用加密函数以及与数据类通信
  * @author Zhao Zhichen
- * @time 2017.08.07 下午2:26:52
- * @version softwareInstaller.17.08.07
+ * @time 2017.08.10 下午12:49:29
+ * @version softwareInstaller for client.17.08.10
  * @see
  */
 public final class Main {
@@ -53,7 +53,6 @@ public final class Main {
 		File.createLogKeyFile(path, own_info);
 	};
 
-	// 检查注册文件，返回值boolean，参数String为文件路径
 	/**
 	 * @Title: checkKey
 	 * @Description: 核对密钥是否一致
@@ -64,25 +63,21 @@ public final class Main {
 	 * @throws NoSuchAlgorithmException
 	 *             未找到加密字典异常
 	 * @return: boolean
-	 * @throws InvalidKeySpecException
-	 * @throws BadPaddingException
-	 * @throws IllegalBlockSizeException
-	 * @throws NoSuchPaddingException
-	 * @throws InvalidKeyException
 	 */
 	public static boolean checkKey(String path) throws IOException, NoSuchAlgorithmException {
 		byte[] ownKey = {};
 		byte[] correctKey = {};
 		KeyCipher loadKey = File.loadKeyFile(path);
 		correctKey = rsaDataDecode(loadKey);/* 解码 */
-		String correctString=new String(correctKey);
-		Scanner sc=new Scanner(correctString);
-		String mKey=sc.next();
-		String version=sc.next();
-		String function=sc.next();
+		String correctString = new String(correctKey);
+		Scanner sc = new Scanner(correctString);
+		String mKey = sc.next();
+		String version = sc.next();
+		String function = sc.next();
 		sc.close();
 		ownKey = hashDataEncode();
-		if (mKey.equals(File.byteArrayToHexString(ownKey))&&version.equals(Main.softwareVersion)&&function.equals(Main.funcationSwitch)) {
+		if (mKey.equals(File.byteArrayToHexString(ownKey)) && version.equals(Main.softwareVersion)
+				&& function.equals(Main.funcationSwitch)) {
 			return true;
 		} else {
 			return false;
@@ -228,6 +223,12 @@ public final class Main {
 		return bkey;
 	}
 
+	/**   
+	 * @Title: rsaDataDecode   
+	 * @Description: RSA算法解密  
+	 * @param key 从文件获取的密码对象，包括加密字串，模以及私钥系数
+	 * @return: byte[]      
+	 */  
 	private static byte[] rsaDataDecode(KeyCipher key) {
 		try {
 			byte[] bkey = {};
@@ -236,10 +237,10 @@ public final class Main {
 			BigInteger privateExponent = new BigInteger(key.prikey);
 			RSAPrivateKeySpec pks = new RSAPrivateKeySpec(modulus, privateExponent);
 			KeyFactory factory = KeyFactory.getInstance("RSA");
-			PrivateKey priKey = factory.generatePrivate(pks);			
-			Cipher cipher = Cipher.getInstance("RSA");/*实例化解密器*/
-			cipher.init(Cipher.DECRYPT_MODE, priKey);/*配置解密器*/
-			bkey = cipher.doFinal(key.result);/*解密*/
+			PrivateKey priKey = factory.generatePrivate(pks);
+			Cipher cipher = Cipher.getInstance("RSA");/* 实例化解密器 */
+			cipher.init(Cipher.DECRYPT_MODE, priKey);/* 配置解密器 */
+			bkey = cipher.doFinal(key.result);/* 解密 */
 			return bkey;
 		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeySpecException
 				| IllegalBlockSizeException | BadPaddingException e) {
@@ -248,6 +249,13 @@ public final class Main {
 		}
 	}
 
+	/**   
+	 * @Title: hashStringShow   
+	 * @Description:  返回机器码
+	 * @throws NoSuchAlgorithmException 未找到加密算法错误
+	 * @throws IOException      读取错误
+	 * @return: String      
+	 */  
 	public static String hashStringShow() throws NoSuchAlgorithmException, IOException {
 		byte[] hbyte = hashDataEncode();
 		String hashString = File.byteArrayToHexString(hbyte);
@@ -257,9 +265,10 @@ public final class Main {
 	 * 哈希加密和RSA解密
 	 * 
 	 */
-	 
+
 }
-class KeyCipher{
+
+class KeyCipher {
 	public String prikey;
 	public String modulus;
 	public byte[] result;
