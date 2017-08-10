@@ -68,7 +68,6 @@ public class File {
 		Reader isr = new FileReader(url);
 		BufferedReader br = new BufferedReader(isr);
 		String result=br.readLine();
-		System.out.println(result.split("")[0]);
 		key.result = hexStringToByteArray(result);/*读取加密后的字符*/
 		key.modulus = br.readLine();/*读取模*/
 		key.prikey = br.readLine();/*读取d*/

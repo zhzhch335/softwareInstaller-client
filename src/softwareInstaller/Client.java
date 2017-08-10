@@ -31,6 +31,7 @@ import java.awt.Toolkit;
  */
 public class Client {
 
+	
 	public static void main(String[] args) {
 
 		/*
@@ -235,7 +236,7 @@ public class Client {
 						String[] info = Main.ownKey();
 						JOptionPane.showMessageDialog(dialog, "软件认证成功，请继续使用", "成功", JOptionPane.INFORMATION_MESSAGE);
 						JOptionPane.showMessageDialog(dialog, "CPUID:" + info[0] + "\n" + "DiskID:" + info[1] + "\n"
-								+ "软件版本：" + info[2] + "\n" + "序列号：" + info[4], "系统信息", JOptionPane.INFORMATION_MESSAGE);
+								+ "软件版本：" + info[2], "系统信息", JOptionPane.INFORMATION_MESSAGE);
 						frmHey.dispose();
 						dialog.setVisible(true);
 						dialog.setTitle("软件版本:" + Main.getSoftwareVersion() + " 认证通过！");

@@ -77,13 +77,14 @@ public final class Main {
 		byte[] correctKey = {};
 		KeyCipher loadKey = File.loadKeyFile(path);
 		correctKey = rsaDataDecode(loadKey);/* 解码 */
-		Scanner sc=new Scanner(new String(correctKey,"UTF-8"));
-		String mKey=sc.next(" ");
-		String version=sc.next(" ");
-		String function=sc.next(" ");
+		String correctString=new String(correctKey);
+		Scanner sc=new Scanner(correctString);
+		String mKey=sc.next();
+		String version=sc.next();
+		String function=sc.next();
 		sc.close();
 		ownKey = hashDataEncode();
-		if (mKey.equals(File.byteArrayToHexString(ownKey))&&version.equals(Main.softwareVersion)&&function.equals(Main.softwareVersion)) {
+		if (mKey.equals(File.byteArrayToHexString(ownKey))&&version.equals(Main.softwareVersion)&&function.equals(Main.funcationSwitch)) {
 			return true;
 		} else {
 			return false;
@@ -241,7 +242,6 @@ public final class Main {
 			Cipher cipher = Cipher.getInstance("RSA");/*实例化解密器*/
 			cipher.init(Cipher.DECRYPT_MODE, priKey);/*配置解密器*/
 			bkey = cipher.doFinal(key.result);/*解密*/
-			System.out.println(new String(bkey));
 			return bkey;
 		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeySpecException
 				| IllegalBlockSizeException | BadPaddingException e) {
@@ -259,39 +259,7 @@ public final class Main {
 	 * 哈希加密和RSA解密
 	 * 
 	 */
-	
-	public static void main(String[] args) {
-		KeyCipher key1 = new KeyCipher();
-		Reader isr;
-		try {
-			isr = new FileReader("C:\\Users\\Administrator\\Desktop\\nkey.key");
-			BufferedReader br = new BufferedReader(isr);
-			String result=br.readLine();
-			System.out.println(result.split("")[0]);
-			key1.result = File.hexStringToByteArray(result);/*读取加密后的字符*/
-			key1.modulus = br.readLine();/*读取模*/
-			key1.prikey = br.readLine();/*读取d*/
-			br.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		RSAPrivateKeySpec rsaspec=new RSAPrivateKeySpec(new BigInteger(key1.modulus),new BigInteger(key1.prikey));
-		KeyFactory factory;
-		try {
-			factory = KeyFactory.getInstance("RSA");
-			PrivateKey n_pri=factory.generatePrivate(rsaspec);
-			Cipher cp1=Cipher.getInstance("RSA");
-			cp1.init(Cipher.DECRYPT_MODE, n_pri);
-			byte[] mkey2=cp1.doFinal(key1.result);
-			System.out.println("直接解密的结果是："+new String(mkey2));
-		} catch (NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	} 
+	 
 }
 class KeyCipher{
 	public String prikey;
