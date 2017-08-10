@@ -91,13 +91,18 @@ public class File {
 	
 	static byte[] hexStringToByteArray(String s) {
 		String[] arr=s.split("");
+		String version=System.getProperty("java.version");/*版本兼容性处理*/
+		int i=0;
+		if(version.matches("1.7.*")) {
+			i=1;
+		}
 		byte[] result=new byte[arr.length/2];
 		int k=0;
-		for(int i=1;i<=arr.length-2;i=i+2) {
+		for(;i<=arr.length-2;i=i+2) {
 			int tempint=Integer.parseInt(arr[i]+arr[i+1], 16)-128;
 			result[k]=(byte)tempint;
 			k++;
-		}
+		}		
 		return result;
 	}
 }

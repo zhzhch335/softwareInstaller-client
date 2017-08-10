@@ -205,7 +205,6 @@ public class Client {
 					} catch (NoSuchAlgorithmException e1) {
 						e1.printStackTrace();
 					}
-					String sn = Main.ownKey()[4];
 					JOptionPane.showMessageDialog(dialog,
 							"写入机器码文件成功，写入路径为" + initText.getText() + "\n" + Main.hashStringShow() + "\n"
 									+ "请将此文件或机器码发送至357611628@qq.com或登陆网站http://jstorage.cn上传",
